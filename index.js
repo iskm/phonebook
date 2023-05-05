@@ -65,11 +65,21 @@ const generateId = () => {
 }
 
 app.post('/api/persons', (request, response) => {
-  if (!request.body) {
+  if (!request.body || !request.body.name || !request.body.number) {
      console.log(`request content is empty`)
+     return response.status(400).json({
+      error: `Attempt to add an object that doesn't exit or doesn't have a name
+      or proper number`
+    })
   }
 
   const body = request.body
+  if (persons.filter( person => person.name === body.name  )) {
+    console.log(`${body.name} already in phonebook`)
+    return response.status(400).json({
+      error: `${body.name} already in phonebook`
+    })
+  }
 
   const person = {
     name: body.name,
