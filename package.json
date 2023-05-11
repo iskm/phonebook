@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./index.js",
-    "build:ui": "rm -rf build && cd ../stack/part2/phonebook/ && npm run build && cp -r build ~/projects/phonebook"
+    "build:ui": "rm -rf build && cd ../stack/part2/phonebook/ && npm run build && cp -r build ~/projects/phonebook",
+    "start": "node ./index.js"
 
   },
   "repository": {
