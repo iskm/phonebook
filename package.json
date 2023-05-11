@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./index.js"
+    "dev": "nodemon ./index.js",
+    "build:ui": "rm -rf build && cd ../stack/part2/phonebook/ && npm run build && cp -r build ~/projects/phonebook"
+
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
   },
   "homepage": "https://github.com/iskm/phonebook#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.22"
