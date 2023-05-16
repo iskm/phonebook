@@ -86,9 +86,9 @@ const generateId = () => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  console.log(body)
+  console.log("inside app.post", body)
 
-  if (body.content === undefined) {
+  if (body === undefined) {
     return response.status(400).json({error: 'content missing'})
   }
 
