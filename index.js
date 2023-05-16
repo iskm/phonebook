@@ -1,7 +1,11 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 const app = express ()
+
+// load .env environment variables
+require('dotenv').config()
 
 morgan.token('object', function getObject(req) {
   if(req.method === 'POST') {
@@ -40,7 +44,11 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-  response.send(persons)
+  Person.find({}).then(persons =>{
+    console.log(persons)
+    response.json(persons)
+  }
+    )
 })
 
 app.get('/info', (request, response) => {
@@ -50,10 +58,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  response.json(person)
-  console.log(person)
+  Person.findById(request.params.id).then(person => {
+    response.json(person)
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -78,31 +85,21 @@ const generateId = () => {
 }
 
 app.post('/api/persons', (request, response) => {
-  if (!request.body || !request.body.name || !request.body.number) {
-     console.log(`request content is empty`)
-     return response.status(400).json({
-      error: `Attempt to add an object that doesn't exit or doesn't have a name
-      or proper number`
-    })
-  }
-
   const body = request.body
-  if (persons.filter( person => person.name === body.name  )) {
-    console.log(`${body.name} already in phonebook`)
-    return response.status(400).json({
-      error: `${body.name} already in phonebook`
-    })
+  console.log(body)
+
+  if (body.content === undefined) {
+    return response.status(400).json({error: 'content missing'})
   }
 
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId()
-  }
+    number: body.number
+  })
 
-  console.log("added", person)
-  persons = persons.concat(person)
-  response.json(person)
+  person.save().then(person => {
+    response.json(person)
+  })
   
 })
 
