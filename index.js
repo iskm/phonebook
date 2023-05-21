@@ -63,13 +63,24 @@ app.get('/api/persons/:id', (request, response) => {
   })
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  console.log(persons)
-  persons = persons.filter(person => person.id !== id)
-  console.log(persons)
-  response.status(204).end()
-  
+const unknownIDHandler = (error, request, reponse, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(unknownIDHandler)
+
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 const getRandomInt = (max) => {
