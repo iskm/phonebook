@@ -19,6 +19,18 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :o
 app.use(express.static('build'))
 app.use(cors())
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
+
 
 let persons = [
   {
